@@ -153,10 +153,12 @@ def category_run(utils, site, offset,limited_run,pages_to_run):
     pageList = getTransclusions(site,"Template:Orphan")
     pageList2 = getTransclusions(site,"Template:Underlinked")
     pageList3 = getTransclusions(site,"Template:Uncategorized")
-    joined_list = [y for x in [pageList, pageList2, pageList3] for y in x]
+    pageList4 = getTransclusions(site,"Template:Unreferenced")
+    joined_list = [y for x in [pageList, pageList2, pageList3, pageList4] for y in x]
     del pageList
     del pageList2
     del pageList3
+    del pageList4
     print(joined_list)
         #with open('temp.txt', 'w') as f:
         #for item in joined_list:
