@@ -23,11 +23,11 @@ def getTransclusions(site,page,sleep_duration = None,extra=""):
             print("cont")
         except NameError:
             print("Namerror")
-            return [pages,i]
+            return pages]
         except Exception as e:
             print("Other exception" + str(e))
             #    print(pages)
-            return pages#[pages,i]
+            return pages
 
 def call_home(site):
     h_page = site.Pages['User:TheSandBot/status']
