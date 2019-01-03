@@ -23,7 +23,7 @@ def getTransclusions(site,page,sleep_duration = None,extra=""):
             print("cont")
         except NameError:
             print("Namerror")
-            return pages]
+            return pages
         except Exception as e:
             print("Other exception" + str(e))
             #    print(pages)
