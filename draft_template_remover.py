@@ -182,16 +182,13 @@ def category_run(utils, site, offset,limited_run,pages_to_run):
             f.close()
         #  counter+=1
         #continue
-        elif limited_run:
-            if counter < pages_to_run:
-                counter += 1
-                text = page.text()
-                try:
-                    save_edit(page, utils, text)
-                except ValueError as err:
-                    print(err)
-            else:
-                return  # run out of pages in limited run
+        else:
+            text = page.text()
+            try:
+                save_edit(page, utils, text)
+            except ValueError as err:
+                print(err)
+    return
 def main():
     dry_run = False
     pages_to_run = 7
