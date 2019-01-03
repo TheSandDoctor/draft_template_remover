@@ -43,7 +43,7 @@ def save_edit(page, utils, text):
     if not call_home(site):#config):
         raise ValueError("Kill switch on-wiki is false. Terminating program.")
     time = 0
-    edit_summary = """Removed [[Template:Orphan]], [[Template:Uncategorized]], [[Template:Unreferenced]], and/or [[Template:Underlinked]] (N/A in the draft namespace) using [[User:""" + config.get('enwiki_sandbot','username') + "| " + config.get('enwiki_sandbot','username') + """]]. Questions? [[User talk:TheSandDoctor|msg TSD!]] ([[WP:Bots/Requests for approval/TheSandBot 2|BRFA in progress]] please mention that this is task #2!)"""
+    edit_summary = """Removed [[Template:Orphan]], [[Template:Uncategorized]], [[Template:Unreferenced]], and/or [[Template:Underlinked]] (N/A in the draft namespace) using [[User:""" + config.get('enwiki_sandbot','username') + "| " + config.get('enwiki_sandbot','username') + """]]. Questions? [[User talk:TheSandDoctor|msg TSD!]] Please mention that this is task #2! ([[WP:Bots/Requests for approval/TheSandBot 2|BRFA]])"""
     while True:
         if time == 1:
             """
