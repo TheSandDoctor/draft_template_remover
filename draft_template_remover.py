@@ -118,6 +118,43 @@ def figure_type(template):
         return "underlinked"
     elif template.name.matches("unreferenced") or template.name.matches("citesources") or template.name.matches("needs references") or template.name.matches("no ref") or template.name.matches("no reference") or template.name.matches("no references") or template.name.matches("no refs") or template.name.matches("no sources") or template.name.matches("noref") or template.name.matches("noreference") or template.name.matches("noreferences") or template.name.matches("norefs") or template.name.matches("nosources") or template.name.matches("nr") or template.name.matches("ref needed") or template.name.matches("references") or template.name.matches("references needed") or template.name.matches("refsneeded") or template.name.matches("uncited article") or template.name.matches("uncited-article") or template.name.matches("unr") or template.name.matches("unref") or template.name.matches("unref'd") or template.name.matches("unrefarticle") or template.name.matches("unreferences article") or template.name.matches("unreferenced stub") or template.name.matches("unreferencedarticle") or template.name.matches("unrf") or template.name.matches("unsourced") or template.name.matches("unverified"):
         return "unreferenced"
+    elif (template.name.matches("Unreferenced section") or template.name.matches("Cite")
+    or template.name.matches("Nocite")
+    or template.name.matches("Noref")
+    or template.name.matches("Noref-section")
+    or template.name.matches("Ref")
+    or template.name.matches("References-s")
+    or template.name.matches("Section")
+    or template.name.matches("Section")
+    or template.name.matches("Section-unsourced")
+    or template.name.matches("Uncited")
+    or template.name.matches("Uncited-section")
+    or template.name.matches("UncitedSection")
+    or template.name.matches("Unref")
+    or template.name.matches("Unref")
+    or template.name.matches("Unref")
+    or template.name.matches("Unref-sect")
+    or template.name.matches("Unref-section")
+    or template.name.matches("Unreferenced")
+    or template.name.matches("Unreferenced")
+    or template.name.matches("Unreferenced")
+    or template.name.matches("Unreferenced-sect")
+    or template.name.matches("Unreferenced-section")
+    or template.name.matches("Unreferencedsec")
+    or template.name.matches("Unreferencedsect")
+    or template.name.matches("UnreferencedSection")
+    or template.name.matches("Unreferencedsection")
+    or template.name.matches("Unrefs")
+    or template.name.matches("Unrefsec")
+    or template.name.matches("Unrefsect")
+    or template.name.matches("Unrefsection")
+    or template.name.matches("Unrs")
+    or template.name.matches("Unsourced")
+    or template.name.matches("Unsourced-section")
+    or template.name.matches("Unsourcedsect")
+    or template.name.matches("Unsourcedsection")
+    or template.name.matches("Urs")):
+        return "unreferenced section"
     else:
         return False
 
