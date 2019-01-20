@@ -28,6 +28,39 @@ def getTransclusions(site,page,sleep_duration = None,extra=""):
             print("Other exception" + str(e))
             #    print(pages)
             return pages
+def getPageID(site,page):
+    result = site.api('query',prop='redirects',titles=str(page),rdcontinue=cont,rdlimit=1,format='json')
+    encoded_hand = json.dumps(result)
+    decoded = json.loads(encoded_hand)
+    return int(list(decoded.get('query').get("pages").keys())[0])
+    
+def getRedirects(site,page,sleep_duration = None,extra=""):
+    cont = None;
+    pages = []
+    i = 1
+    while(1):
+        result = site.api('query',prop='redirects',titles=str(page),rdcontinue=cont,rdlimit=500,rdnamespace=10,format='json')
+        #print("got here")
+        encoded_hand = json.dumps(result)
+        decoded = json.loads(encoded_hand)
+        page_id = int(list(decoded.get('query').get("pages").keys())[0])
+        if sleep_duration is (not None):
+            time.sleep(sleep_duration)
+        #res2 = result['query']['embeddedin']
+        for res in result['query']['pages'][str(page_id)]:
+            print('append ' + res['title'])
+            pages.append(res['title'])
+            i +=1
+        try:
+            cont = result['continue']['rdcontinue']
+            print("cont")
+        except NameError:
+            print("Namerror")
+            return pages
+        except Exception as e:
+            print("Other exception" + str(e))
+            #    print(pages)
+            return pages
 
 def call_home(site):
     h_page = site.Pages['User:TheSandBot/status']
