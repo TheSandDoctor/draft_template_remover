@@ -28,39 +28,6 @@ def getTransclusions(site,page,sleep_duration = None,extra=""):
             print("Other exception" + str(e))
             #    print(pages)
             return pages
-def getPageID(site,page):
-    result = site.api('query',prop='redirects',titles=str(page),rdcontinue=cont,rdlimit=1,format='json')
-    encoded_hand = json.dumps(result)
-    decoded = json.loads(encoded_hand)
-    return int(list(decoded.get('query').get("pages").keys())[0])
-    
-def getRedirects(site,page,sleep_duration = None,extra=""):
-    cont = None;
-    pages = []
-    i = 1
-    while(1):
-        result = site.api('query',prop='redirects',titles=str(page),rdcontinue=cont,rdlimit=500,rdnamespace=10,format='json')
-        #print("got here")
-        encoded_hand = json.dumps(result)
-        decoded = json.loads(encoded_hand)
-        page_id = int(list(decoded.get('query').get("pages").keys())[0])
-        if sleep_duration is (not None):
-            time.sleep(sleep_duration)
-        #res2 = result['query']['embeddedin']
-        for res in result['query']['pages'][str(page_id)]:
-            print('append ' + res['title'])
-            pages.append(res['title'])
-            i +=1
-        try:
-            cont = result['continue']['rdcontinue']
-            print("cont")
-        except NameError:
-            print("Namerror")
-            return pages
-        except Exception as e:
-            print("Other exception" + str(e))
-            #    print(pages)
-            return pages
 
 def call_home(site):
     h_page = site.Pages['User:TheSandBot/status']
@@ -68,7 +35,7 @@ def call_home(site):
     return bool(json.loads(text)["run"]["draft_na_template_remover"])
 
 def save_edit(page, utils, text):
-    config,site,dry_run = utils
+    config,site = utils
     original_text = text
 
     code = mwparserfromhell.parse(text)
@@ -85,7 +52,7 @@ def save_edit(page, utils, text):
             """
             text = site.Pages[page.page_title].text()
         try:
-            content_changed, text = process_page(original_text,dry_run)
+            content_changed, text = process_page(original_text)
         except ValueError as e:
             """
             To get here, there must have been an issue figuring out the
@@ -191,7 +158,7 @@ def figure_type(template):
     else:
         return False
 
-def process_page(text,dry_run):
+def process_page(text):
     wikicode = mwparserfromhell.parse(text)
     templates = wikicode.filter_templates()
     content_changed = False
@@ -260,23 +227,14 @@ def category_run(utils, site, offset,limited_run,pages_to_run):
                 print(err)
     return
 def main():
-    dry_run = False
     pages_to_run = 7
     offset = 0
     #category = "Dts templates with deprecated parameters"
     limited_run = True
 
-    parser = argparse.ArgumentParser(prog='DeprecatedFixerBot Music infobox fixer', description='')
-    parser.add_argument("-dr", "--dryrun", help="perform a dry run (don't actually edit)",
-                    action="store_true")
-    args = parser.parse_args()
-    if args.dryrun:
-        dry_run = True
-        print("Dry run")
+
 
     site = mwclient.Site(('https','en.wikipedia.org'), '/w/')
-    if dry_run:
-        pathlib.Path('./tests').mkdir(parents=False, exist_ok=True)
     config = configparser.RawConfigParser()
     config.read('credentials.txt')
     try:
@@ -286,7 +244,7 @@ def main():
         print(e)
         raise ValueError("Login failed.")
 
-    utils = [config,site,dry_run]
+    utils = [config,site]
     try:
         category_run(utils, site, offset,limited_run,pages_to_run)
     except ValueError as e:
