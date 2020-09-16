@@ -3,12 +3,13 @@ import mwclient, configparser, mwparserfromhell, argparse,re, pathlib, json
 from time import sleep
 from mwclient import errors
 
+templates_set = set()
 def getTransclusions(site,page,sleep_duration = None,extra=""):
-    cont = None;
+    cont = None
     pages = []
     i = 1
     while(1):
-        result = site.api('query',list='embeddedin',eititle=str(page),eicontinue=cont,eilimit=500,format='json')
+        result = site.api('query',list='embeddedin',einamespace=118,eititle=str(page),eicontinue=cont,eilimit=500,format='json')
         #print("got here")
         if sleep_duration is (not None):
             time.sleep(sleep_duration)
@@ -43,7 +44,7 @@ def save_edit(page, utils, text):
     if not call_home(site):#config):
         raise ValueError("Kill switch on-wiki is false. Terminating program.")
     time = 0
-    edit_summary = """Removed [[Template:Orphan]], [[Template:Uncategorized]], [[Template:Unreferenced]], and/or [[Template:Underlinked]] (N/A in the draft namespace) using [[User:""" + config.get('enwiki_sandbot','username') + "| " + config.get('enwiki_sandbot','username') + """]]. Questions? [[User talk:TheSandDoctor|msg TSD!]] Please mention that this is task #2! ([[WP:Bots/Requests for approval/TheSandBot 2|BRFA]])"""
+    edit_summary = """Removed [[Template:Orphan]], [[Template:Uncategorized]], [[Template:Unreferenced]], and/or [[Template:Underlinked]] (N/A in the draft namespace). Questions? [[User talk:TheSandDoctor|msg TSD!]] Please mention that this is task #2! ([[WP:Bots/Requests for approval/TheSandBot 2|BRFA]])"""
     while True:
         if time == 1:
             """
@@ -83,13 +84,13 @@ def save_edit(page, utils, text):
                 f = open("changes.txt",'a+')
                 f.write(page.name + "\n")
                 f.close()
+        except errors.ProtectedPageError:
+            print('Could not edit ' + page.page_title + ' due to protection')
         except errors.EditError:
             print("Error")
             time = 1
             sleep(5)   # sleep for 5 seconds before trying again
             continue
-        except errors.ProtectedPageError:
-            print('Could not edit ' + page.page_title + ' due to protection')
         break
 def get_valid_filename(s):
     """
@@ -104,60 +105,6 @@ def get_valid_filename(s):
     s = str(s).strip().replace(' ', '_')
     return re.sub(r'(?u)[^-\w.]', '', s)
 
-def figure_type(template):
-    """
-    Figure out the type (name) of the template in question. This was originally
-    in process_page(), but it became unwieldy.
-    Returns false if the template is none of the ones we are looking for.
-    """
-    if template.name.matches("orphan") or template.name.matches("Do-attempt") or template.name.matches("Lonely") or template.name.matches("Orp") or template.name.matches("Orphaned articles"):
-        return "orphan"
-    elif template.name.matches("uncategorized") or template.name.matches("+cat") or template.name.matches("cat needed") or template.name.matches("categories needed") or template.name.matches("categories requested") or template.name.matches("categorise") or template.name.matches("categorize") or template.name.matches("category needed") or template.name.matches("category requested") or template.name.matches("categoryneeded") or template.name.matches("categorizeame") or template.name.matches("catneeded") or template.name.matches("ncat") or template.name.matches("needs cat") or template.name.matches("needs categories") or template.name.matches("needs cats") or template.name.matches("no categories") or template.name.matches("no category") or template.name.matches("no cats") or template.name.matches("noc") or template.name.matches("nocat") or template.name.matches("nocategory") or template.name.matches("nocats") or template.name.matches("uncat") or template.name.matches("uncategorised"):
-        return "uncategorized"
-    elif template.name.matches("underlinked") or template.name.matches("+L") or template.name.matches("add links") or template.name.matches("few links") or template.name.matches("internal links") or template.name.matches("internal links needed") or template.name.matches("internallinks") or template.name.matches("link up") or template.name.matches("linkage") or template.name.matches("linkme") or template.name.matches("linkup") or template.name.matches("more links") or template.name.matches("not enough links") or template.name.matches("too few links") or template.name.matches("under-linked") or template.name.matches("underlink") or template.name.matches("Underlinked section") or template.name.matches("unlinked") or template.name.matches("wikilinks"):
-        return "underlinked"
-    elif template.name.matches("unreferenced") or template.name.matches("citesources") or template.name.matches("needs references") or template.name.matches("no ref") or template.name.matches("no reference") or template.name.matches("no references") or template.name.matches("no refs") or template.name.matches("no sources") or template.name.matches("noref") or template.name.matches("noreference") or template.name.matches("noreferences") or template.name.matches("norefs") or template.name.matches("nosources") or template.name.matches("nr") or template.name.matches("ref needed") or template.name.matches("references") or template.name.matches("references needed") or template.name.matches("refsneeded") or template.name.matches("uncited article") or template.name.matches("uncited-article") or template.name.matches("unr") or template.name.matches("unref") or template.name.matches("unref'd") or template.name.matches("unrefarticle") or template.name.matches("unreferences article") or template.name.matches("unreferenced stub") or template.name.matches("unreferencedarticle") or template.name.matches("unrf") or template.name.matches("unsourced") or template.name.matches("unverified"):
-        return "unreferenced"
-    elif (template.name.matches("Unreferenced section") or template.name.matches("Cite")
-    or template.name.matches("Nocite")
-    or template.name.matches("Noref")
-    or template.name.matches("Noref-section")
-    or template.name.matches("Ref")
-    or template.name.matches("References-s")
-    or template.name.matches("Section")
-    or template.name.matches("Section")
-    or template.name.matches("Section-unsourced")
-    or template.name.matches("Uncited")
-    or template.name.matches("Uncited-section")
-    or template.name.matches("UncitedSection")
-    or template.name.matches("Unref")
-    or template.name.matches("Unref")
-    or template.name.matches("Unref")
-    or template.name.matches("Unref-sect")
-    or template.name.matches("Unref-section")
-    or template.name.matches("Unreferenced")
-    or template.name.matches("Unreferenced")
-    or template.name.matches("Unreferenced")
-    or template.name.matches("Unreferenced-sect")
-    or template.name.matches("Unreferenced-section")
-    or template.name.matches("Unreferencedsec")
-    or template.name.matches("Unreferencedsect")
-    or template.name.matches("UnreferencedSection")
-    or template.name.matches("Unreferencedsection")
-    or template.name.matches("Unrefs")
-    or template.name.matches("Unrefsec")
-    or template.name.matches("Unrefsect")
-    or template.name.matches("Unrefsection")
-    or template.name.matches("Unrs")
-    or template.name.matches("Unsourced")
-    or template.name.matches("Unsourced-section")
-    or template.name.matches("Unsourcedsect")
-    or template.name.matches("Unsourcedsection")
-    or template.name.matches("Urs")):
-        return "unreferenced section"
-    else:
-        return False
-
 def process_page(text):
     wikicode = mwparserfromhell.parse(text)
     templates = wikicode.filter_templates()
@@ -165,8 +112,9 @@ def process_page(text):
 
     code = mwparserfromhell.parse(text) # parse WikiCode on page
     for template in code.filter_templates():
-        type = figure_type(template)
-        if(type):
+        #type = figure_type(template)
+        #if(type):
+        if template.name.lower() in templates_set:
             try:
                 code.remove(template)
                 print(str(template) + " removed")
@@ -191,11 +139,17 @@ def category_run(utils, site, offset,limited_run,pages_to_run):
     pageList2 = getTransclusions(site,"Template:Underlinked")
     pageList3 = getTransclusions(site,"Template:Uncategorized")
     pageList4 = getTransclusions(site,"Template:Unreferenced")
+   # pageList5 = []
+ #   for stub in templates_set:
+  #      pageList5.append(getTransclusions(site,stub))
+
+    #joined_list = [y for x in [pageList, pageList2, pageList3, pageList4, pageList5] for y in x]
     joined_list = [y for x in [pageList, pageList2, pageList3, pageList4] for y in x]
     del pageList
     del pageList2
     del pageList3
     del pageList4
+    del pageList5
     print(joined_list)
         #with open('temp.txt', 'w') as f:
         #for item in joined_list:
@@ -226,13 +180,25 @@ def category_run(utils, site, offset,limited_run,pages_to_run):
             except ValueError as err:
                 print(err)
     return
+
+def find_redirects(page):
+    if len(list(page.backlinks(filterredir='redirects'))) == 0:
+        templates_set.add(page.name.lower())
+    else:
+        for i in page.backlinks(filterredir='redirects'):
+            find_redirects(i)
+
+
 def main():
     pages_to_run = 7
     offset = 0
     #category = "Dts templates with deprecated parameters"
     limited_run = True
-
-
+    templates_set = set(line.strip().lower() for line in open('temp_types.txt'))
+    #templates_set = set(line.strip().lower() for line in open('stub_types.txt'))
+    #templates_temp = set(line.strip().lower()[9:] for line in open('redirects_final_filtered.txt'))
+    #templates_set.update(templates_temp)
+    #del templates_temp
 
     site = mwclient.Site(('https','en.wikipedia.org'), '/w/')
     config = configparser.RawConfigParser()
