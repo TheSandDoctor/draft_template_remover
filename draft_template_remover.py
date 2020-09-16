@@ -66,22 +66,22 @@ def save_edit(page, utils, text):
             and return out of this method.
             """
             print(e)
-            pathlib.Path('./errors').mkdir(parents=False, exist_ok=True)
+            pathlib.Path('/data/project/thesandbot/draft_template_remover/errors/errors').mkdir(parents=False, exist_ok=True)
             title = get_valid_filename(page.page_title)
-            text_file = open("./errors/err " + title + ".txt", "w")
+            text_file = open("/data/project/thesandbot/draft_template_remover/errors/err " + title + ".txt", "w")
             text_file.write("Error present: " +  str(e) + "\n\n\n\n\n" + text)
             text_file.close()
-            text_file = open("./errors/error_list.txt", "a+")
+            text_file = open("/data/project/thesandbot/draft_template_remover/errors/error_list.txt", "a+")
             text_file.write(page.page_title + "\n")
             text_file.close()
-            text_file = open("./errors/wikified_error_list.txt", "a+")
+            text_file = open("/data/project/thesandbot/draft_template_remover/errors/wikified_error_list.txt", "a+")
             text_file.write("#[[" + page.page_title + "]]" + "\n")
             text_file.close()
             return
         try:
                 page.save(text, summary=edit_summary, bot=True, minor=True)
                 print("Saved page")
-                f = open("changes.txt",'a+')
+                f = open("/data/project/thesandbot/draft_template_remover/changes.txt",'a+')
                 f.write(page.name + "\n")
                 f.close()
         except errors.ProtectedPageError:
@@ -168,7 +168,7 @@ def category_run(utils, site, offset,limited_run,pages_to_run):
         print("Working with: " + page.name + " " + str(counter))
         if page.name == "":
             print("PAGE BLANK")
-            f = open("blank titles.txt",'a+')
+            f = open("/data/project/thesandbot/draft_template_remover/blank titles.txt",'a+')
             f.write(page.name + "\n")
             f.close()
         #  counter+=1
@@ -194,7 +194,7 @@ def main():
     offset = 0
     #category = "Dts templates with deprecated parameters"
     limited_run = True
-    templates_set = set(line.strip().lower() for line in open('temp_types.txt'))
+    templates_set = set(line.strip().lower() for line in open('/data/project/thesandbot/draft_template_remover/temp_types.txt'))
     #templates_set = set(line.strip().lower() for line in open('stub_types.txt'))
     #templates_temp = set(line.strip().lower()[9:] for line in open('redirects_final_filtered.txt'))
     #templates_set.update(templates_temp)
@@ -202,7 +202,7 @@ def main():
 
     site = mwclient.Site(('https','en.wikipedia.org'), '/w/')
     config = configparser.RawConfigParser()
-    config.read('credentials.txt')
+    config.read('/data/project/thesandbot/draft_template_remover/credentials.txt')
     try:
         #pass
         site.login(config.get('enwiki_sandbot','username'), config.get('enwiki_sandbot', 'password'))
