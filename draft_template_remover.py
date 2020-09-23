@@ -150,7 +150,7 @@ def category_run(utils, site, offset,limited_run,pages_to_run):
     del pageList2
     del pageList3
     del pageList4
-    del pageList5
+    #del pageList5
     print(joined_list)
         #with open('temp.txt', 'w') as f:
         #for item in joined_list:
