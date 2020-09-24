@@ -8,4 +8,6 @@ changes_txt_name = '/data/project/thesandbot/draft_template_remover/changes.txt'
 blank_titles_txt_name = '/data/project/thesandbot/draft_template_remover/blank titles.txt'
 temp_types_path = '/data/project/thesandbot/draft_template_remover/temp_types.txt'
 
+debug_path = '/data/project/thesandbot/draft_template_remover/debug.txt'
+
 credentials_path = '/data/project/thesandbot/draft_template_remover/credentials.txt'

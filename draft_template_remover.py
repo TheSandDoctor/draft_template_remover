@@ -121,6 +121,9 @@ def process_page(text):
             try:
                 code.remove(template)
                 print(str(template) + " removed")
+                deb = open(fpaths.debug_path, "a+")
+                deb.write(str(template) + "removed\n")
+                deb.close()
                 content_changed = True
             except ValueError:
                 raise   # deal with this at a higher level
