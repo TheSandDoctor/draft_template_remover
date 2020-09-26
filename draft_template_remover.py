@@ -144,7 +144,7 @@ def category_run(utils, site, offset,limited_run,pages_to_run):
     counter = 0
     joined_list = []
     for temp in templates_set:
-        joined_list.extend(getTransclusions(site, temp)
+        joined_list.extend(getTransclusions(site, 'Template:' + temp))
     #pageList = getTransclusions(site,"Template:Orphan")
     #pageList2 = getTransclusions(site,"Template:Underlinked")
     #pageList3 = getTransclusions(site,"Template:Uncategorized")
