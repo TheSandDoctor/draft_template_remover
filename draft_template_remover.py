@@ -144,7 +144,7 @@ def category_run(utils, site, offset,limited_run,pages_to_run):
     counter = 0
     joined_list = []
     for temp in templates_set:
-        joined_list.extend(getTransclusions(site, temp)
+        joined_list.extend(getTransclusions(site, 'Template:' + temp))
     #pageList = getTransclusions(site,"Template:Orphan")
     #pageList2 = getTransclusions(site,"Template:Underlinked")
     #pageList3 = getTransclusions(site,"Template:Uncategorized")
@@ -204,6 +204,7 @@ def main():
     offset = 0
     #category = "Dts templates with deprecated parameters"
     limited_run = True
+    global templates_set
     templates_set = set(line.strip().lower() for line in open(fpaths.temp_types_path))
     #templates_set = set(line.strip().lower() for line in open('stub_types.txt'))
     #templates_temp = set(line.strip().lower()[9:] for line in open('redirects_final_filtered.txt'))
