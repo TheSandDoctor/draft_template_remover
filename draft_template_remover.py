@@ -1,7 +1,9 @@
-#!/usr/bin/env python3.6
+#!/data/project/deprecated-fixer-bot/my_venv/bin/python3
+# -*- coding: utf-8 -*-
 import mwclient, configparser, mwparserfromhell, argparse,re, pathlib, json
 from time import sleep
 from mwclient import errors
+import fpaths
 
 templates_set = set()
 def getTransclusions(site,page,sleep_duration = None,extra=""):
@@ -66,22 +68,23 @@ def save_edit(page, utils, text):
             and return out of this method.
             """
             print(e)
-            pathlib.Path('./errors').mkdir(parents=False, exist_ok=True)
+            pathlib.Path(fpaths.errors_record_dir).mkdir(parents=False, exist_ok=True)
             title = get_valid_filename(page.page_title)
-            text_file = open("./errors/err " + title + ".txt", "w")
+            text_file = open(fpaths.errors_prefix + title + ".txt", "w")
             text_file.write("Error present: " +  str(e) + "\n\n\n\n\n" + text)
             text_file.close()
-            text_file = open("./errors/error_list.txt", "a+")
+            text_file = open(fpaths.errors_list_txt_name, "a+")
             text_file.write(page.page_title + "\n")
             text_file.close()
-            text_file = open("./errors/wikified_error_list.txt", "a+")
+            text_file = open(fpaths.errors_list_txt_name_wikified, "a+")
             text_file.write("#[[" + page.page_title + "]]" + "\n")
             text_file.close()
             return
         try:
+            if content_changed:
                 page.save(text, summary=edit_summary, bot=True, minor=True)
                 print("Saved page")
-                f = open("changes.txt",'a+')
+                f = open(fpath.changes_txt_name,'a+')
                 f.write(page.name + "\n")
                 f.close()
         except errors.ProtectedPageError:
@@ -118,6 +121,10 @@ def process_page(text):
             try:
                 code.remove(template)
                 print(str(template) + " removed")
+                deb = open(fpaths.debug_path, "a+")
+                deb.write(str(template) + "removed\n")
+                deb.close()
+                content_changed = True
             except ValueError:
                 raise   # deal with this at a higher level
     return [content_changed, str(code)] # get back text to save
@@ -135,22 +142,25 @@ def category_run(utils, site, offset,limited_run,pages_to_run):
         raise ValueError("""Seriously? How are we supposed to run pages in a
         limited test if none are specified?""")
     counter = 0
-    pageList = getTransclusions(site,"Template:Orphan")
-    pageList2 = getTransclusions(site,"Template:Underlinked")
-    pageList3 = getTransclusions(site,"Template:Uncategorized")
-    pageList4 = getTransclusions(site,"Template:Unreferenced")
+    joined_list = []
+    for temp in templates_set:
+        joined_list.extend(getTransclusions(site, temp)
+    #pageList = getTransclusions(site,"Template:Orphan")
+    #pageList2 = getTransclusions(site,"Template:Underlinked")
+    #pageList3 = getTransclusions(site,"Template:Uncategorized")
+    #pageList4 = getTransclusions(site,"Template:Unreferenced")
    # pageList5 = []
  #   for stub in templates_set:
   #      pageList5.append(getTransclusions(site,stub))
 
     #joined_list = [y for x in [pageList, pageList2, pageList3, pageList4, pageList5] for y in x]
-    joined_list = [y for x in [pageList, pageList2, pageList3, pageList4] for y in x]
-    del pageList
-    del pageList2
-    del pageList3
-    del pageList4
-    del pageList5
-    print(joined_list)
+    #joined_list = [y for x in [pageList, pageList2, pageList3, pageList4] for y in x]
+    #del pageList
+    #del pageList2
+    #del pageList3
+    #del pageList4
+    #del pageList5
+    #print(joined_list)
         #with open('temp.txt', 'w') as f:
         #for item in joined_list:
             #print(item)
@@ -168,7 +178,7 @@ def category_run(utils, site, offset,limited_run,pages_to_run):
         print("Working with: " + page.name + " " + str(counter))
         if page.name == "":
             print("PAGE BLANK")
-            f = open("blank titles.txt",'a+')
+            f = open(fpaths.blank_titles_txt_name,'a+')
             f.write(page.name + "\n")
             f.close()
         #  counter+=1
@@ -194,7 +204,7 @@ def main():
     offset = 0
     #category = "Dts templates with deprecated parameters"
     limited_run = True
-    templates_set = set(line.strip().lower() for line in open('temp_types.txt'))
+    templates_set = set(line.strip().lower() for line in open(fpaths.temp_types_path))
     #templates_set = set(line.strip().lower() for line in open('stub_types.txt'))
     #templates_temp = set(line.strip().lower()[9:] for line in open('redirects_final_filtered.txt'))
     #templates_set.update(templates_temp)
@@ -202,7 +212,7 @@ def main():
 
     site = mwclient.Site(('https','en.wikipedia.org'), '/w/')
     config = configparser.RawConfigParser()
-    config.read('credentials.txt')
+    config.read(fpaths.credentials_path)
     try:
         #pass
         site.login(config.get('enwiki_sandbot','username'), config.get('enwiki_sandbot', 'password'))
