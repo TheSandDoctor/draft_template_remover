@@ -82,10 +82,10 @@ def save_edit(page, utils, text):
             return
         try:
             if content_changed:
-                page.save(text, summary=edit_summary, bot=True, minor=True)
+                #page.save(text, summary=edit_summary, bot=True, minor=True)
                 print("Saved page")
                 f = open(fpath.changes_txt_name,'a+')
-                f.write(page.name + "\n")
+                f.write(text)
                 f.close()
         except errors.ProtectedPageError:
             print('Could not edit ' + page.page_title + ' due to protection')
@@ -210,7 +210,7 @@ def main():
     #templates_set.update(templates_temp)
     #del templates_temp
 
-    site = mwclient.Site(('https','en.wikipedia.org'), '/w/')
+    site = mwclient.Site('en.wikipedia.org')
     config = configparser.RawConfigParser()
     config.read(fpaths.credentials_path)
     try:
