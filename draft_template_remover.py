@@ -204,6 +204,7 @@ def main():
     offset = 0
     #category = "Dts templates with deprecated parameters"
     limited_run = True
+    global templates_set
     templates_set = set(line.strip().lower() for line in open(fpaths.temp_types_path))
     #templates_set = set(line.strip().lower() for line in open('stub_types.txt'))
     #templates_temp = set(line.strip().lower()[9:] for line in open('redirects_final_filtered.txt'))
