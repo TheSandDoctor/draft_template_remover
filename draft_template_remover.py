@@ -1,4 +1,4 @@
-#!/data/project/deprecated-fixer-bot/my_venv/bin/python3
+#!/usr/bin/env python3.6
 # -*- coding: utf-8 -*-
 import mwclient, configparser, mwparserfromhell, argparse,re, pathlib, json
 from time import sleep

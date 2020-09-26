@@ -1,13 +1,13 @@
-#!/data/project/deprecated-fixer-bot/my_venv/bin/python3
+#!/usr/bin/env python3.6
 # -*- coding: utf-8 -*-
-errors_record_dir = '/data/project/thesandbot/draft_template_remover/errors/errors'
-errors_prefix = '/data/project/thesandbot/draft_template_remover/errors/err '
-errors_list_txt_name = '/data/project/thesandbot/draft_template_remover/errors/error_list.txt'
-errors_list_txt_name_wikified = '/data/project/thesandbot/draft_template_remover/errors/wikified_error_list.txt'
-changes_txt_name = '/data/project/thesandbot/draft_template_remover/changes.txt'
-blank_titles_txt_name = '/data/project/thesandbot/draft_template_remover/blank titles.txt'
-temp_types_path = '/data/project/thesandbot/draft_template_remover/temp_types.txt'
+errors_record_dir = './errors'
+errors_prefix = './errors/err '
+errors_list_txt_name = './errors/error_list.txt'
+errors_list_txt_name_wikified = './errors/wikified_error_list.txt'
+changes_txt_name = 'changes.txt'
+blank_titles_txt_name = 'blank titles.txt'
+temp_types_path = 'temp_types.txt'
 
-debug_path = '/data/project/thesandbot/draft_template_remover/debug.txt'
+debug_path = 'debug.txt'
 
-credentials_path = '/data/project/thesandbot/draft_template_remover/credentials.txt'
+credentials_path = 'credentials.txt'
