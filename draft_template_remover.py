@@ -82,10 +82,10 @@ def save_edit(page, utils, text):
             return
         try:
             if content_changed:
-                #page.save(text, summary=edit_summary, bot=True, minor=True)
+                page.save(text, summary=edit_summary, bot=True, minor=True)
                 print("Saved page")
                 f = open(fpath.changes_txt_name,'a+')
-                f.write(text)
+                f.write(page.page_title + "\n")
                 f.close()
         except errors.ProtectedPageError:
             print('Could not edit ' + page.page_title + ' due to protection')
@@ -104,7 +104,7 @@ def get_valid_filename(s):
     @param s String to convert to be file safe
     @return File safe string
     """
-    assert(s is not "" or s is not None)
+    assert(s != "" or s is not None)
     s = str(s).strip().replace(' ', '_')
     return re.sub(r'(?u)[^-\w.]', '', s)
 
